@@ -1,7 +1,7 @@
 export const scrollToBottom = () => {
-  var currHeight = window.scrollY;
-  window.scrollTo({
-    top: currHeight + window.innerHeight,
+  window.scrollBy({
+    top: window.scrollY + window.innerHeight,
     behavior: "smooth",
   });
+  console.log("scrolled");
 };

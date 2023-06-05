@@ -1,7 +1,24 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { fetchFromAPI } from "./utils/fetchFromAPI";
+import { publish } from "./utils/pubsub";
 
 export const Input = () => {
   const [id, setId] = useState("");
+  const [data, setData] = useState([]);
+  const [prevId, setPrevId] = useState("");
+
+  const fetchData = async () => {
+    if (prevId !== id && id !== "") {
+      fetchFromAPI(id).then((data) => {
+        setData(data);
+        setPrevId(id);
+      });
+    }
+  };
+
+  useEffect(() => {
+    publish("stateChange", data);
+  }, [data]);
 
   return (
     <div className="flex flex-1 justify-center mt-20 md:mt-0 h-screen">
@@ -19,7 +36,10 @@ export const Input = () => {
             value={id}
             onChange={(e) => setId(e.target.value)}
           />
-          <button className="w-1/4 p-2.5 bg-green-a rounded-md ml-2 hover:bg-green-b">
+          <button
+            className="w-1/4 p-2.5 bg-green-a rounded-md ml-2 hover:bg-green-b"
+            onClick={() => fetchData()}
+          >
             <p className="font-bold text-xl">Search</p>
           </button>
         </div>
